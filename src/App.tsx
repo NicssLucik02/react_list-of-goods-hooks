@@ -15,40 +15,42 @@ export const goodsFromServer = [
   'Garlic',
 ];
 
-function getSort(Goods: string[], activeSort: SortStatus, isReversed: boolean): string[] {
-    const sorted = [...Goods];
+enum SortStatus {
+  All = 'all',
+  Alphabetical = 'alphabetical',
+  Length = 'length',
+}
 
-    switch (activeSort) {
-      case SortStatus.Alphabetical:
-        sorted.sort((a, b) => a.localeCompare(b));
-        break;
+function getSort(
+  Goods: string[],
+  activeSort: SortStatus,
+  isReversed: boolean,
+): string[] {
+  const sorted = [...Goods];
 
-      case SortStatus.Length:
-        sorted.sort((a, b) => a.length - b.length);
+  switch (activeSort) {
+    case SortStatus.Alphabetical:
+      sorted.sort((a, b) => a.localeCompare(b));
       break;
 
-      default:
-
+    case SortStatus.Length:
+      sorted.sort((a, b) => a.length - b.length);
       break;
-    }
 
-    if (isReversed) {
-      sorted.reverse();
-    }
-
-    return sorted;
+    default:
+      break;
   }
 
-    enum SortStatus {
-    All = 'all',
-    Alphabetical = 'alphabetical',
-    Length = 'length',
+  if (isReversed) {
+    sorted.reverse();
   }
+
+  return sorted;
+}
 
 export const App: React.FC = () => {
   const [activeSort, setActiveSort] = useState<SortStatus>(SortStatus.All);
   const [isReversed, setIsReversed] = useState<boolean>(false);
-
 
   const handleResetClick = () => {
     setActiveSort(SortStatus.All);
