@@ -15,23 +15,21 @@ export const goodsFromServer = [
   'Garlic',
 ];
 
-export const App: React.FC = () => {
-  const [activeSort, setActiveSort] = useState<string>('all');
-  const [isReversed, setIsReversed] = useState<boolean>(false);
+function getSort(Goods: string[], activeSort: SortStatus, isReversed: boolean): string[] {
+    const sorted = [...Goods];
 
-  enum SortStatus {
-    All = 'all',
-    Alphabetical = 'alphabetical',
-    Length = 'length',
-  }
+    switch (activeSort) {
+      case SortStatus.Alphabetical:
+        sorted.sort((a, b) => a.localeCompare(b));
+        break;
 
-  function getSort(): string[] {
-    const sorted = [...goodsFromServer];
+      case SortStatus.Length:
+        sorted.sort((a, b) => a.length - b.length);
+      break;
 
-    if (activeSort === SortStatus.Alphabetical) {
-      sorted.sort((a, b) => a.localeCompare(b));
-    } else if (activeSort === SortStatus.Length) {
-      sorted.sort((a, b) => a.length - b.length);
+      default:
+
+      break;
     }
 
     if (isReversed) {
@@ -41,12 +39,23 @@ export const App: React.FC = () => {
     return sorted;
   }
 
-  const resetOnClick = () => {
+    enum SortStatus {
+    All = 'all',
+    Alphabetical = 'alphabetical',
+    Length = 'length',
+  }
+
+export const App: React.FC = () => {
+  const [activeSort, setActiveSort] = useState<SortStatus>(SortStatus.All);
+  const [isReversed, setIsReversed] = useState<boolean>(false);
+
+
+  const handleResetClick = () => {
     setActiveSort(SortStatus.All);
     setIsReversed(false);
   };
 
-  const sortedGoods = getSort();
+  const sortedGoods = getSort(goodsFromServer, activeSort, isReversed);
 
   return (
     <div className="section content">
@@ -89,7 +98,7 @@ export const App: React.FC = () => {
           <button
             type="button"
             className="button is-danger is-light"
-            onClick={resetOnClick}
+            onClick={handleResetClick}
           >
             Reset
           </button>
